@@ -55,8 +55,8 @@
 #include "interrupt_manager.h"
 #include "adcc.h"
 #include "ext_int.h"
-#include "cmp1.h"
 #include "dac.h"
+#include "cmp1.h"
 #include "tmr0.h"
 #include "eusart.h"
 

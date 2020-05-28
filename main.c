@@ -74,11 +74,14 @@ uint16_t ReadAdc( void ){
 #define THRESHOLD_AD	200			// 1.0V	現在値＋この値をコンパレータの閾値にする。
 void SetDacValue( uint16_t ad ){
 	static uint16_t baseAd = BASE_AD;
-	uint16_t tmp;
+	uint16_t tmp,baseLineAd;
+
+	baseLineAd = (baseAd>UPPER_AD) ?baseAd-UPPER_AD :0 ;
 	
-	if( ad < (baseAd+UPPER_AD)) {
+	if( ad > baseLineAd ) {
 		if( ad >baseAd ) baseAd ++;
 		else if( ad < baseAd ) baseAd --;
+
 		tmp = (baseAd +THRESHOLD_AD) >>5 ;	// 基準値算出と10->5bit変換
 		DAC1CON1 = tmp;
 	}
@@ -134,7 +137,7 @@ void main(void)
 			TaskAdc();
 			SetDacValue( ReadAdc() );
 			
-			ReceiveData( &gIn );
+			ReceiveData( &gComm );
 			
 		}
     }
