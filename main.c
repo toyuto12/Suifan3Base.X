@@ -30,9 +30,9 @@ static uint8_t exMainFanLevel;
 void isrZeroCrossCapture(void){
 	if( gComm.FanLevel == exMainFanLevel ){
 		sMainFanChangeDeadtime = MAIN_DEADTIME;
-		oMAINFAN_HIGH = ( exMainFanLevel == 3 ) ?1 :0 ;
+		oMAINFAN_HIGH = ( exMainFanLevel == 1 ) ?1 :0 ;
 		oMAINFAN_MID = ( exMainFanLevel == 2 ) ?1 :0 ;
-		oMAINFAN_LOW = ( exMainFanLevel == 1 ) ?1 :0 ;
+		oMAINFAN_LOW = ( exMainFanLevel == 3 ) ?1 :0 ;
 	}else if( sMainFanChangeDeadtime ){
 		sMainFanChangeDeadtime --;
 		oMAINFAN_HIGH = 0;
@@ -74,11 +74,9 @@ uint16_t ReadAdc( void ){
 #define THRESHOLD_AD	200			// 1.0V	現在値＋この値をコンパレータの閾値にする。
 void SetDacValue( uint16_t ad ){
 	static uint16_t baseAd = BASE_AD;
-	uint16_t tmp,baseLineAd;
-
-	baseLineAd = (baseAd>UPPER_AD) ?baseAd-UPPER_AD :0 ;
+	uint16_t tmp;
 	
-	if( ad > baseLineAd ) {
+	if( ad > (baseAd+UPPER_AD) ) {
 		if( ad >baseAd ) baseAd ++;
 		else if( ad < baseAd ) baseAd --;
 
@@ -130,7 +128,6 @@ void main(void)
     INTERRUPT_PeripheralInterruptEnable();
 
     while (1){
-		
 		if( gInterval ){
 			gInterval --;
 			
@@ -138,7 +135,7 @@ void main(void)
 			SetDacValue( ReadAdc() );
 			
 			ReceiveData( &gComm );
-			
+
 		}
     }
 }
