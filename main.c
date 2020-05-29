@@ -76,7 +76,7 @@ void SetDacValue( uint16_t ad ){
 	static uint16_t baseAd = BASE_AD;
 	uint16_t tmp;
 	
-	if( ad > (baseAd+UPPER_AD) ) {
+	if( ad < (baseAd+UPPER_AD) ) {
 		if( ad >baseAd ) baseAd ++;
 		else if( ad < baseAd ) baseAd --;
 
